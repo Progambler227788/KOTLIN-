@@ -1,10 +1,9 @@
 name: Daily Commit
 
-# Allow manual triggering using workflow_dispatch
 on:
-  workflow_dispatch:  # This enables manual execution of the workflow
+  workflow_dispatch:  # Enable manual trigger
   schedule:
-    - cron: '0 0 * * *'  # This runs at 00:00 UTC every day
+    - cron: '0 0 * * *'  # Runs at 00:00 UTC every day
 
 jobs:
   commit:
@@ -12,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2  # Check out the code from your repository
+        uses: actions/checkout@v2
       
       - name: Make a commit
         run: |
@@ -20,5 +19,18 @@ jobs:
           git config --local user.email "talhaatif@gmail.com"
           git config --local user.name "talha atif"
           git add daily_commit.txt
-          git commit -m "Daily commit on $(date '+%Y-%m-%d %H:%M:%S')"
-          git push
+          
+          # Check for changes before committing
+          if ! git diff --cached --quiet; then
+            git commit -m "Daily commit on $(date '+%Y-%m-%d %H:%M:%S')"
+          else
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # Fetch and merge changes from the remote before pushing
+          git fetch origin main
+          git merge origin/main --no-edit
+
+          # Push using the PAT
+          git push https://x-access-token:${{ secrets.PAT }}@github.com/Progambler227788/KOTLIN-.git
