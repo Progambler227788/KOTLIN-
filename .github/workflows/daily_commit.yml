@@ -17,8 +17,8 @@ jobs:
       - name: Make a commit
         run: |
           echo "Daily commit on $(date)" >> daily_commit.txt
-          git config --local user.email "talha@gmail.com"
-          git config --local user.name "talha"
+          git config --local user.email "talhaatif@gmail.com"
+          git config --local user.name "talha atif"
           git add daily_commit.txt
           git commit -m "Daily commit on $(date '+%Y-%m-%d %H:%M:%S')"
           git push
